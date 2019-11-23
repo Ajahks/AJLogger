@@ -1,0 +1,8 @@
+AJLogger is a simple key logger project
+How to use:
+- pipinstall pynput
+- First make a log.txt file in the same folder as the main.py file.
+It's current features are:
+- Logging strings of keystrokes separated when when user left clicks, hits tab, or enter.
+- Logs uppercases and special characters when holding down space to emulate typing in any text document.
+- Shows timestamps for every keystroke line in the log file.
